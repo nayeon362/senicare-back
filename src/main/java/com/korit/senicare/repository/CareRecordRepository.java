@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import com.korit.senicare.entity.CareRecordEntity;
 
 @Repository
-public interface CareRepository extends JpaRepository<CareRecordEntity, Integer>{
-    
+public interface CareRecordRepository extends JpaRepository<CareRecordEntity, Integer> {
+
 }
