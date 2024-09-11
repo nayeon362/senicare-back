@@ -1,11 +1,11 @@
 package com.korit.senicare.service.implement;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.korit.senicare.common.util.AuthNumberCreator;
 import com.korit.senicare.dto.request.auth.IdCheckRequestDto;
+import com.korit.senicare.dto.request.auth.TelAuthCheckRequestDto;
 import com.korit.senicare.dto.request.auth.TelAuthRequestDto;
 import com.korit.senicare.dto.response.ResponseDto;
 import com.korit.senicare.entity.TelAuthNumberEntity;
@@ -14,6 +14,7 @@ import com.korit.senicare.repository.NurseRepository;
 import com.korit.senicare.repository.TelAuthNumberRepository;
 import com.korit.senicare.service.AuthService;
 
+import jakarta.el.ELException;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -63,7 +64,9 @@ public class AuthServiceImplement implements AuthService {
 
         String authNumber = AuthNumberCreator.number4();
 
-        smsProvider.sendMessage(telNumber, authNumber);
+        boolean isSendSuccess = smsProvider.sendMessage(telNumber, authNumber);
+        if (!isSendSuccess)
+            return ResponseDto.messageSendFail();
 
         try {
 
@@ -78,4 +81,24 @@ public class AuthServiceImplement implements AuthService {
         return ResponseDto.success();
 
     }
+
+    @Override
+    public ResponseEntity<ResponseDto> telAuthCheck(TelAuthCheckRequestDto dto) {
+
+        String telNumber = dto.getTelNumber();
+        String authNumber = dto.getAuthNumber();
+
+        try {
+            boolean isMatched = telAuthNumberRepository.existsByTelNumberAndAuthNumber(telNumber, authNumber);
+            if (!isMatched) return ResponseDto.telAuthFail();
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+
+        return ResponseDto.success();
+
+    }
+
 }

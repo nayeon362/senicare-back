@@ -16,13 +16,8 @@ public class ResponseDto {
     private String message;
 
     public static ResponseEntity<ResponseDto> success() {
-        ResponseDto responseBody = new ResponseDto(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
+        ResponseDto responseBody = new ResponseDto(ResponseCode.SUCCCESS, ResponseMessage.SUCCESS);
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
-    }
-
-    public static ResponseEntity<ResponseDto> duplicatedUserId() {
-        ResponseDto responseBody = new ResponseDto(ResponseCode.DUPLICATED_USER_ID, ResponseMessage.DUPLICATED_USER_ID);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseBody);
     }
 
     public static ResponseEntity<ResponseDto> validationFail() {
@@ -30,9 +25,19 @@ public class ResponseDto {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseBody);
     }
 
+    public static ResponseEntity<ResponseDto> duplicatedUserId() {
+        ResponseDto responseBody = new ResponseDto(ResponseCode.DUPLICATED_USER_ID, ResponseMessage.DUPLICATED_USER_ID);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseBody);
+    }
+
     public static ResponseEntity<ResponseDto> duplicatedTelNumber() {
         ResponseDto responseBody = new ResponseDto(ResponseCode.DUPLICATED_TEL_NUMBER, ResponseMessage.DUPLICATED_TEL_NUMBER);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseBody);
+    }
+
+    public static ResponseEntity<ResponseDto> telAuthFail() {
+        ResponseDto responseBody = new ResponseDto(ResponseCode.TEL_AUTH_FAIL, ResponseMessage.TEL_AUTH_FAIL);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseBody);
     }
 
     public static ResponseEntity<ResponseDto> messageSendFail() {
@@ -44,5 +49,5 @@ public class ResponseDto {
         ResponseDto responseBody = new ResponseDto(ResponseCode.DATABASE_ERROR, ResponseMessage.DATABASE_ERROR);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
     }
-
+    
 }

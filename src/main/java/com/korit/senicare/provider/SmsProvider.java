@@ -17,9 +17,9 @@ public class SmsProvider {
     private final DefaultMessageService messageService;
     private final String from;
 
-    public SmsProvider (
+    public SmsProvider(
         @Value("${cool-sms.api-key}") String apiKey,
-        @Value("${cool-sms.secret-api-key}")  String apiSecretKey,
+        @Value("${cool-sms.secret-key}") String apiSecretKey,
         @Value("${cool-sms.domain}") String domain,
         @Value("${cool-sms.from}") String from
     ) {
@@ -27,17 +27,18 @@ public class SmsProvider {
         this.from = from;
     }
 
-    public void sendMessage(String to, String authNumber) {
+    public boolean sendMessage(String to, String authNumber) {
 
         Message message = new Message();
         message.setFrom(from);
         message.setTo(to);
-        message.setText("Senicare 인증번호 [" + authNumber + "] 를 정확히 입력해주세요.");
+        message.setText("Senicare 인증 번호 [" + authNumber + "] 를 정확히 입력해주세요.");
 
         SingleMessageSendingRequest request = new SingleMessageSendingRequest(message);
         SingleMessageSentResponse response = messageService.sendOne(request);
-        
-        System.out.println(response);
+
+        boolean resultStatus = response.getStatusCode().equals("2000");
+        return resultStatus;
 
     }
 
