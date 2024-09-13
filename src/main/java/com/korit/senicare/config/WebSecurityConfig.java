@@ -15,6 +15,8 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.korit.senicare.filter.JwtAuthenticationFilter;
+import com.korit.senicare.handler.OAuth2SuccessHandler;
+import com.korit.senicare.service.implement.OAuth2UserServiceImplement;
 
 import lombok.RequiredArgsConstructor;
 
@@ -25,7 +27,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class WebSecurityConfig {
 
-    private final JwtAuthenticationFilter jwtAutheitcationFilter;
+    private final OAuth2SuccessHandler oAuth2SuccessHandler;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final OAuth2UserServiceImplement oauth2Service;
 
     @Bean
     protected SecurityFilterChain configure(HttpSecurity security) throws Exception {
@@ -33,7 +37,7 @@ public class WebSecurityConfig {
         security
                 // basic 인증 방식 미사용
                 .httpBasic(HttpBasicConfigurer::disable)
-                // session 미사용(유지 X)
+                // session 미사용 (유지 X)
                 .sessionManagement(sessionManagement -> sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 // CSRF 취약점 대비 미지정
@@ -42,14 +46,22 @@ public class WebSecurityConfig {
                 .cors(cors -> cors.configurationSource(configurationSource()))
                 // URL 패턴 및 HTTP 메서드에 따라 인증 및 인가 여부 지정
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/api/v1/auth/**", "/").permitAll()
+                        .requestMatchers("/api/v1/auth/**", "/oauth2/callback/*", "/").permitAll()
                         .anyRequest().authenticated())
+                // oAuth2 로그인 적용
+                .oauth2Login(oauth2 -> oauth2
+                        .redirectionEndpoint(endpoint -> endpoint.baseUri("/oauth2/callback/*"))
+                        .authorizationEndpoint(endpoint -> endpoint.baseUri("/api/v1/auth/sns-sign-in"))
+                        .userInfoEndpoint(endpoint -> endpoint.userService(oauth2Service))
+                        .successHandler(oAuth2SuccessHandler)
+                        )
                 // 필터 등록
-                .addFilterBefore(jwtAutheitcationFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return security.build();
     }
 
+    @Bean
     protected CorsConfigurationSource configurationSource() {
 
         CorsConfiguration configuration = new CorsConfiguration();
@@ -61,5 +73,7 @@ public class WebSecurityConfig {
         source.registerCorsConfiguration("/**", configuration);
 
         return source;
+
     }
+
 }
