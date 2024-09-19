@@ -14,17 +14,18 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 
-// class : JWT 생성 및 검증 기능 제공자
+// class: JWT 생성 및 검증 기능 제공자
 // - JWT 암호화 알고리즘 HS256
 // - 비밀키 환경변수에 있는 jwt.secret
 // - JWT 만료기간 10시간
 
 @Component
 public class JwtProvider {
-
+    
     @Value("${jwt.secret}")
-    private String secetkey;
+    private String secetKey;
 
+    // JWT 생성 메서드
     public String create(String userId) {
 
         // 만료시간 = 현재시간 + 10시간
@@ -35,7 +36,7 @@ public class JwtProvider {
         try {
 
             // JWT 암호화에 사용할 Key 생성
-            Key key = Keys.hmacShaKeyFor(secetkey.getBytes(StandardCharsets.UTF_8));
+            Key key = Keys.hmacShaKeyFor(secetKey.getBytes(StandardCharsets.UTF_8));
 
             // JWT 생성
             jwt = Jwts.builder()
@@ -44,7 +45,7 @@ public class JwtProvider {
                 .setIssuedAt(new Date())
                 .setExpiration(expiredDate)
                 .compact();
-
+            
         } catch (Exception exception) {
             exception.printStackTrace();
             return null;
@@ -54,7 +55,7 @@ public class JwtProvider {
 
     }
 
-    // 검증 메서드
+    // JWT 검증 메서드
     public String validate(String jwt) {
 
         String userId = null;
@@ -62,15 +63,15 @@ public class JwtProvider {
         try {
             
             // JWT 암호화에 사용할 Key 생성
-            Key key = Keys.hmacShaKeyFor(secetkey.getBytes(StandardCharsets.UTF_8));
+            Key key = Keys.hmacShaKeyFor(secetKey.getBytes(StandardCharsets.UTF_8));
 
             // jwt 검증 및 payload의 subject 값 추출
             userId = Jwts.parserBuilder()
-                    .setSigningKey(key)
-                    .build()
-                    .parseClaimsJws(jwt)
-                    .getBody()
-                    .getSubject();
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(jwt)
+                .getBody()
+                .getSubject();
 
         } catch (Exception exception) {
             exception.printStackTrace();

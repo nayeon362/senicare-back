@@ -16,12 +16,13 @@ import jakarta.servlet.http.HttpServletResponse;
 // OAuth2 유저 서비스 작업이 성공했을 때 처리
 @Component
 public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
-
+    
     @Override
     public void onAuthenticationSuccess(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            Authentication authentication) throws IOException, ServletException {
+        HttpServletRequest request,
+        HttpServletResponse response,
+        Authentication authentication
+    ) throws IOException, ServletException {
 
         CustomOAuth2User customOAuth2User = (CustomOAuth2User) authentication.getPrincipal();
         Map<String, Object> attributes = customOAuth2User.getAttributes();
@@ -30,14 +31,14 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         // 회원가입 O
         if (existed) {
             String accessToken = (String) attributes.get("accessToken");
-            response.sendRedirect("http://localhost:3000/sns-success?accessToekn=" + accessToken + "&expiration=36000");
+            response.sendRedirect("http://localhost:3000/sns-success?accessToken=" + accessToken + "&expiration=36000");
         }
         // 회원가입 X
         else {
             String snsId = (String) attributes.get("snsId");
             String joinPath = (String) attributes.get("joinPath");
             response.sendRedirect("http://localhost:3000/auth?snsId=" + snsId + "&joinPath=" + joinPath);
-        }
+        } 
 
     }
 

@@ -20,7 +20,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
-// JWT 검증 및 Security Context에 접근 제어자 추가 필커
+// JWT 검증 및 Security Context에 접근 제어자 등록 필터
 // - request의 header 에서 토큰 추출 검증
 // - security context에 접근 제어자 정보 등록
 @Component
@@ -33,51 +33,50 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-                try {
+        try {
 
-                    // Request 객체에서 Bearer 토큰 추출
-                    String token = parseBearerToken(request);
-                    if (token == null) {
-                        filterChain.doFilter(request, response);
-                        return;
-                    }
-
-                    // 토큰 검증
-                    String userId = jwtProvider.validate(token);
-                    if (userId == null) {
-                        filterChain.doFilter(request, response);
-                        return;
-                    } 
-
-                    // security context에 등록
-                    setContext(request, userId);
-
-                } catch(Exception exception) {
-                    exception.printStackTrace();
-                }
-
+            // Request 객체에서 Bearer 토큰 추출
+            String token = parseBearerToken(request);
+            if (token == null) {
                 filterChain.doFilter(request, response);
-            
+                return;
             }
-    
 
-    // request로부터 토큰 추출
+            // 토큰 검증
+            String userId = jwtProvider.validate(token);
+            if (userId == null) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+
+            // security context에 등록
+            setContext(request, userId);
+
+        } catch(Exception exception) {
+            exception.printStackTrace();
+        }
+
+        filterChain.doFilter(request, response);
+
+    }
+
+    // reuqest로부터 토큰 추출
     private String parseBearerToken(HttpServletRequest request) {
 
-    // Request 객체의 Header에서 Authorization 필드 값을 추출
-    String authorization = request.getHeader("Authorization");
+        // Request 객체의 Header에서 Authorization 필드 값을 추출
+        String authorization = request.getHeader("Authorization");
 
-    // 추출한 authorization 값이 실제로 존재하는 문자열인지 확인
-    boolean hasAuthorization = StringUtils.hasText(authorization);
-    if (!hasAuthorization) return null;
+        // 추출한 authorization 값이 실제로 존재하는 문자열인지 확인
+        boolean hasAuthorization = StringUtils.hasText(authorization);
+        if (!hasAuthorization) return null;
 
-    // Bearer 인증 방식인지 확인
-    boolean isBearer = authorization.startsWith("Bearer ");
-    if(!isBearer) return null;
+        // Bearer 인증 방식인지 확인
+        boolean isBearer = authorization.startsWith("Bearer ");
+        if (!isBearer) return null;
 
-    // Authorization 필드 값에서 토큰 추출
-    String token = authorization.substring(7);
-    return token;
+        // Authorization 필드 값에서 토큰 추출
+        String token = authorization.substring(7);
+        return token;
 
     }
 
@@ -86,9 +85,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         // 접근 주체에 대한 인증 토큰 생성
         AbstractAuthenticationToken authenticationToken =
-        new UsernamePasswordAuthenticationToken(userId, null, AuthorityUtils.NO_AUTHORITIES);
+            new UsernamePasswordAuthenticationToken(userId, null, AuthorityUtils.NO_AUTHORITIES);
 
-        // 생성한 인증 토큰이 어떤 요청에 대한 내용인 상세정보 추가
+        // 생성한 인증 토큰이 어떤 요청에 대한 내용인 상세 정보 추가
         authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
         // 빈 security context 생성
@@ -101,6 +100,5 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         SecurityContextHolder.setContext(securityContext);
 
     }
-
+    
 }
-

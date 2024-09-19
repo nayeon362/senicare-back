@@ -10,7 +10,7 @@ import com.korit.senicare.dto.response.ResponseMessage;
 import lombok.Getter;
 
 @Getter
-public class SignInResponseDto extends ResponseDto{
+public class SignInResponseDto extends ResponseDto {
 
     private String accessToken;
     private Integer expiration;
@@ -24,7 +24,7 @@ public class SignInResponseDto extends ResponseDto{
     }
 
     public static ResponseEntity<SignInResponseDto> success(String accessToken) {
-        SignInResponseDto responseBody = new SignInResponseDto(null);
+        SignInResponseDto responseBody = new SignInResponseDto(accessToken);
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
     

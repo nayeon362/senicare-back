@@ -1,5 +1,7 @@
 package com.korit.senicare.entity;
 
+import com.korit.senicare.dto.request.tool.PostToolRequestDto;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -14,15 +16,21 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "tools")
-@Table(name = "tools")
+@Entity(name="tools")
+@Table(name="tools")
 public class ToolEntity {
     
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Integer toolNumber;
     private String name;
     private String purpose;
     private Integer count;
+
+    public ToolEntity(PostToolRequestDto dto) {
+        this.name = dto.getName();
+        this.purpose = dto.getPurpose();
+        this.count = dto.getCount();
+    }
 
 }

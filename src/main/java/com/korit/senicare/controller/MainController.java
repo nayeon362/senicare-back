@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/")
 public class MainController {
-
+    
     @GetMapping("")
     public String main() {
         return "Server on...";
