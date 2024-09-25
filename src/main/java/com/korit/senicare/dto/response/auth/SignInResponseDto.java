@@ -17,7 +17,7 @@ public class SignInResponseDto extends ResponseDto {
 
     private SignInResponseDto(String accessToken) {
 
-        super(ResponseCode.SUCCCESS, ResponseMessage.SUCCESS);
+        super(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
         this.accessToken = accessToken;
         this.expiration = 10 * 60 * 60;
 

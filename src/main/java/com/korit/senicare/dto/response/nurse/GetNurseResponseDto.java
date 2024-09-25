@@ -1,11 +1,8 @@
 package com.korit.senicare.dto.response.nurse;
 
-import java.util.List;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import com.korit.senicare.common.object.Nurse;
 import com.korit.senicare.dto.response.ResponseCode;
 import com.korit.senicare.dto.response.ResponseDto;
 import com.korit.senicare.dto.response.ResponseMessage;
@@ -14,16 +11,20 @@ import com.korit.senicare.entity.NurseEntity;
 import lombok.Getter;
 
 @Getter
-public class GetNurseListResponseDto extends ResponseDto {
-    private List<Nurse> nurses;
+public class GetNurseResponseDto extends ResponseDto {
+    private String userId;
+    private String name;
+    private String telNumber;
 
-    private GetNurseListResponseDto(List<NurseEntity> nurseEntities) {
+    private GetNurseResponseDto(NurseEntity nurseEntity) {
         super(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
-        this.nurses = Nurse.getList(nurseEntities);
+        this.userId = nurseEntity.getUserId();
+        this.name = nurseEntity.getName();
+        this.telNumber = nurseEntity.getTelNumber();
     }
 
-    public static ResponseEntity<GetNurseListResponseDto> success(List<NurseEntity> nurseEntities) {
-        GetNurseListResponseDto responseBody = new GetNurseListResponseDto(nurseEntities);
+    public static ResponseEntity<GetNurseResponseDto> success(NurseEntity nurseEntity) {
+        GetNurseResponseDto responseBody = new GetNurseResponseDto(nurseEntity);
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
 }

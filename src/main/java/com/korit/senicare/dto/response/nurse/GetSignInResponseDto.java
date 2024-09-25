@@ -18,7 +18,7 @@ public class GetSignInResponseDto extends ResponseDto {
     private String telNumber;
 
     public GetSignInResponseDto(NurseEntity nurseEntity) {
-        super(ResponseCode.SUCCCESS, ResponseMessage.SUCCESS);
+        super(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
         this.userId = nurseEntity.getUserId();
         this.name = nurseEntity.getName();
         this.telNumber = nurseEntity.getTelNumber();

@@ -19,7 +19,7 @@ public class GetToolResponseDto extends ResponseDto {
     private Integer count;
 
     private GetToolResponseDto(ToolEntity toolEntity) {
-        super(ResponseCode.SUCCCESS, ResponseMessage.SUCCESS);
+        super(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
         this.toolNumber = toolEntity.getToolNumber();
         this.name = toolEntity.getName();
         this.purpose = toolEntity.getPurpose();

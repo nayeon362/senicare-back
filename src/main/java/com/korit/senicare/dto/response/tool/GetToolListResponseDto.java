@@ -19,7 +19,7 @@ public class GetToolListResponseDto extends ResponseDto {
     private List<Tool> tools;
 
     private GetToolListResponseDto(List<ToolEntity> toolEntities) {
-        super(ResponseCode.SUCCCESS, ResponseMessage.SUCCESS);
+        super(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
         this.tools = Tool.getList(toolEntities);
     }
 
