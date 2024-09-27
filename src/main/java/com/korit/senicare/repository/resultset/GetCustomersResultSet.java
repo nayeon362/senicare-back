@@ -4,7 +4,7 @@ public interface GetCustomersResultSet {
     Integer getCustomerNumber();
     String getName();
     String getBirth();
-    String getLoaction();
+    String getLocation();
     String getChargerName();
     String getChargerId();
 }

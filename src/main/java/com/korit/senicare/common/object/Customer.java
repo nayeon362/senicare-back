@@ -21,7 +21,7 @@ public class Customer {
         this.customerNumber = resultSet.getCustomerNumber();
         this.name = resultSet.getName();
         this.birth = resultSet.getBirth();
-        this.location = resultSet.getLoaction();
+        this.location = resultSet.getLocation();
         this.chargerName = resultSet.getChargerName();
         this.chargerId = resultSet.getChargerId();
     }
@@ -30,7 +30,7 @@ public class Customer {
 
         List<Customer> customers = new ArrayList<>();
 
-        for (GetCustomersResultSet resultSet : resultSets) {
+        for (GetCustomersResultSet resultSet: resultSets) {
             Customer customer = new Customer(resultSet);
             customers.add(customer);
         }
@@ -38,5 +38,4 @@ public class Customer {
         return customers;
 
     }
-
 }
